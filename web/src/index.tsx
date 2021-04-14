@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { ApolloProvider } from '@apollo/react-hooks';
 import './index.css';
-import App from './App';
+import { Routes } from './Routes';
 import reportWebVitals from './reportWebVitals';
 
 const client = new ApolloClient({
@@ -13,7 +13,7 @@ const client = new ApolloClient({
 
 ReactDOM.render(
 	<ApolloProvider client={client}>
-		<App />
+		<Routes />
 	</ApolloProvider>,
 	document.getElementById('root')
 );
