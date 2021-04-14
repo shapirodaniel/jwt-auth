@@ -1,18 +1,23 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import { Field, Int, ObjectType } from 'type-graphql';
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
 
-@Entity()
-export class User {
+// can provide an explicit table name
 
-    @PrimaryGeneratedColumn()
-    id: number;
+@ObjectType()
+@Entity('users')
+export class User extends BaseEntity {
+	// expose fields with @Field
+	// typeORM can't infer type of number since int / float etc.
+	// so we have to specify with anon fn
+	@Field(() => Int)
+	@PrimaryGeneratedColumn()
+	id: number;
 
-    @Column()
-    firstName: string;
+	// inferred type but can be specified as well
+	@Field()
+	@Column('text')
+	email: string;
 
-    @Column()
-    lastName: string;
-
-    @Column()
-    age: number;
-
+	@Column()
+	password: string;
 }
