@@ -20,4 +20,11 @@ export class User extends BaseEntity {
 
 	@Column()
 	password: string;
+
+	// whenever we create a refresh token
+	// we'll pass the current token version
+	// allows us to revoke / invalidate any tokens
+	// whose version doesn't match current
+	@Column('int', { default: 0 })
+	tokenVersion: number;
 }

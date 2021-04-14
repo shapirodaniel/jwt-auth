@@ -7,13 +7,15 @@ import {
 	Field,
 	Ctx,
 	UseMiddleware,
+	Int,
 } from 'type-graphql';
 import { hash, compare } from 'bcryptjs';
 import { User } from './entity/User';
 import { MyContext } from './MyContext';
 import { createAccessToken, createRefreshToken } from './auth';
 import { isAuth } from './isAuth';
-
+import { sendRefreshToken } from './sendRefreshToken';
+import { getConnection } from 'typeorm';
 @ObjectType()
 class LoginResponse {
 	@Field()
@@ -67,6 +69,22 @@ export class UserResolver {
 		return true;
 	}
 
+	// don't actually make a mutation like this
+	// make a function for internal use if someone forgets a pswd
+	// or their account gets hacked
+	@Mutation(() => Boolean)
+	async revokeRefreshTokensForUser(@Arg('userId', () => Int) userId: number) {
+		await getConnection()
+			.getRepository(User)
+			// typeORM has a built-in increment function
+			// takes the object used to find the instance
+			// the field to increment
+			// the value to increment by
+			.increment({ id: userId }, 'tokenVersion', 1);
+
+		return true;
+	}
+
 	@Mutation(() => LoginResponse)
 	async login(
 		@Arg('email', () => String) email: string,
@@ -95,10 +113,7 @@ export class UserResolver {
 
 		// login successful
 		// generate a refresh token
-		// pick a generic id name
-		res.cookie('jid', createRefreshToken(user), {
-			httpOnly: true, // restrict access to cookie to http
-		});
+		sendRefreshToken(res, createRefreshToken(user));
 
 		// give users tokens to stay logged in, access other parts of site
 		return {
