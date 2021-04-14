@@ -6,11 +6,13 @@ import {
 	ObjectType,
 	Field,
 	Ctx,
+	UseMiddleware,
 } from 'type-graphql';
 import { hash, compare } from 'bcryptjs';
 import { User } from './entity/User';
 import { MyContext } from './MyContext';
 import { createAccessToken, createRefreshToken } from './auth';
+import { isAuth } from './isAuth';
 
 @ObjectType()
 class LoginResponse {
@@ -24,6 +26,15 @@ export class UserResolver {
 	@Query(() => String)
 	hello() {
 		return 'hi!';
+	}
+
+	// check if access token in header, validate if correct
+	@Query(() => String)
+	@UseMiddleware(isAuth)
+	bye(@Ctx() { payload }: MyContext) {
+		console.log(payload);
+		// we know userId will be available if we get to this point
+		return `your user id is: ${payload!.userId}`;
 	}
 
 	// return array of all users in db
