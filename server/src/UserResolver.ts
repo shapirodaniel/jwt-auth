@@ -82,6 +82,10 @@ export class UserResolver {
 			// the value to increment by
 			.increment({ id: userId }, 'tokenVersion', 1);
 
+		// tokenVersion provides a history
+		// of how many times a user has needed
+		// to update their login info (due to hacks or otherwise)
+
 		return true;
 	}
 
