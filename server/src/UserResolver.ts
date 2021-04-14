@@ -96,7 +96,7 @@ export class UserResolver {
 		// login successful
 		// generate a refresh token
 		// pick a generic id name
-		res.cookie('jid', createRefreshToken, {
+		res.cookie('jid', createRefreshToken(user), {
 			httpOnly: true, // restrict access to cookie to http
 		});
 
