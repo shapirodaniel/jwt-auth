@@ -101,7 +101,7 @@ export class UserResolver {
 		await getConnection()
 			.getRepository(User)
 			// typeORM has a built-in increment function
-			// args:
+			// that takes the following args:
 			// the object used to find the instance
 			// the field to increment
 			// the value to increment by
