@@ -101,7 +101,8 @@ export class UserResolver {
 		await getConnection()
 			.getRepository(User)
 			// typeORM has a built-in increment function
-			// takes the object used to find the instance
+			// args:
+			// the object used to find the instance
 			// the field to increment
 			// the value to increment by
 			.increment({ id: userId }, 'tokenVersion', 1);
@@ -109,7 +110,6 @@ export class UserResolver {
 		// tokenVersion provides a history
 		// of how many times a user has needed
 		// to update their login info (due to hacks or otherwise)
-
 		return true;
 	}
 
