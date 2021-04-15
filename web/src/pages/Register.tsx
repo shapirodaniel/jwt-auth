@@ -25,7 +25,7 @@ export const Register: React.FC<RouteComponentProps> = ({ history }) => {
 
 				console.log(response);
 
-				history.push('/home');
+				history.push('/');
 			}}
 		>
 			<div>
@@ -44,7 +44,7 @@ export const Register: React.FC<RouteComponentProps> = ({ history }) => {
 				/>
 			</div>
 			<div>
-				<button type='submit'>Submit</button>
+				<button type='submit'>Register</button>
 			</div>
 		</form>
 	);
