@@ -48,14 +48,22 @@ export const Header: React.FC = () => {
 				{!loading && data && data.me && (
 					<button
 						onClick={async () => {
-							// kill refresh token
-							await logout();
+							// try block catches err
+							// when component attempts to rerender
+							// if we're on a page that has a query
+							// that requires logged in user info
+							try {
+								// kill refresh token
+								await logout();
 
-							// kill access token
-							setAccessToken('');
+								// kill access token
+								setAccessToken('');
 
-							// reset Apollo client store
-							await client.resetStore();
+								// reset Apollo client store
+								await client.resetStore();
+							} catch (err) {
+								console.error(err);
+							}
 						}}
 					>
 						logout

@@ -102,7 +102,7 @@ const client = new ApolloClient({
 				setAccessToken(accessToken);
 			},
 			// handleResponse: (operation, accessTokenField) => (response: any) => {
-			// here you can parse response, handle rrors, prepare returned token to further operations
+			// here you can parse response, handle errors, prepare returned token to further operations
 			// returned object should be structured
 			// {
 			// 	access_token: 'token string goes here'
