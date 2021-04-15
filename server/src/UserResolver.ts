@@ -16,10 +16,13 @@ import { createAccessToken, createRefreshToken } from './auth';
 import { isAuth } from './isAuth';
 import { sendRefreshToken } from './sendRefreshToken';
 import { getConnection } from 'typeorm';
+import { verify } from 'jsonwebtoken';
 @ObjectType()
 class LoginResponse {
 	@Field()
 	accessToken: string;
+	@Field(() => User) // let graphql know the type
+	user: User;
 }
 
 @Resolver()
@@ -43,6 +46,27 @@ export class UserResolver {
 	@Query(() => [User])
 	users() {
 		return User.find();
+	}
+
+	@Query(() => User, { nullable: true })
+	me(@Ctx() context: MyContext) {
+		// check if user sent us an accessToken
+		const authorization = context.req.headers['authorization'];
+
+		if (!authorization) {
+			return null;
+		}
+
+		try {
+			const token = authorization.split(' ')[1];
+			const payload: any = verify(token, process.env.ACCESS_TOKEN_SECRET!);
+			return User.findOne(payload.userId);
+		} catch (err) {
+			console.log(err);
+			return null;
+		}
+
+		return null;
 	}
 
 	@Mutation(() => Boolean)
@@ -124,6 +148,17 @@ export class UserResolver {
 			// sign() fn generates accessToken
 			// takes object with info we want, a secret string, options/config obj
 			accessToken: createAccessToken(user),
+			user,
 		};
+	}
+
+	@Mutation(() => Boolean)
+	async logout(@Ctx() { res }: MyContext) {
+		// send an empty refresh token to log user out
+		sendRefreshToken(res, '');
+		// or, res.clearCookie() --> but sendRefreshToken guarantees
+		// all cookie attributes match
+
+		return true;
 	}
 }
