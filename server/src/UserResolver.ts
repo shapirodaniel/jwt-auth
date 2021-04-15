@@ -37,7 +37,6 @@ export class UserResolver {
 	@Query(() => String)
 	@UseMiddleware(isAuth)
 	bye(@Ctx() { payload }: MyContext) {
-		console.log(payload);
 		// we know userId will be available if we get to this point
 		return `your user id is: ${payload!.userId}`;
 	}
