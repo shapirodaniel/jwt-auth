@@ -16,7 +16,14 @@ import { App } from './App';
 import './index.css';
 
 // set request headers
-// from Apollo docs
+// from Apollo docs, ApolloLink
+// allows us to customize data flow betweeen ApolloClient
+// and our GraphQL server (ApolloServer here)
+// here we want to introduce an HTTP header
+// to the outgoing operation request for authentication purposes
+// final link in an ApolloLink chain sends the operation to its destination
+// "usually a GraphQL server over HTTP"
+// forward method allows us to move to the next link in the chain
 const requestLink = new ApolloLink(
 	(operation, forward) =>
 		new Observable(observer => {
@@ -33,6 +40,14 @@ const requestLink = new ApolloLink(
 					}
 				})
 				.then(() => {
+					// forward function's return type is an Observable
+					// provided by zen-observable library
+					// Observables are sequences of values which may be observed, eg streams
+					// an Observable instance begins publishing values ONLY when someone subscribes to it
+					// (from Angular docs --> hopefully holds true here as well!)
+
+					// here we set up a subscriber to the Observable named "handle"
+					// so that we can cleanup after the ApolloLink (ie stop listening for pushed values from the Observable)
 					handle = forward(operation).subscribe({
 						next: observer.next.bind(observer),
 						error: observer.error.bind(observer),
