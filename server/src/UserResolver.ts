@@ -64,8 +64,6 @@ export class UserResolver {
 			console.log(err);
 			return null;
 		}
-
-		return null;
 	}
 
 	@Mutation(() => Boolean)
@@ -155,8 +153,9 @@ export class UserResolver {
 	async logout(@Ctx() { res }: MyContext) {
 		// send an empty refresh token to log user out
 		sendRefreshToken(res, '');
-		// or, res.clearCookie() --> but sendRefreshToken guarantees
-		// all cookie attributes match
+
+		// or, res.clearCookie()
+		// but sendRefreshToken guarantees all cookie attributes match
 
 		return true;
 	}
